@@ -7,13 +7,15 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter;
+import org.springframework.data.jdbc.jms.support.oracle.DatumMapper;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.destination.BeanFactoryDestinationResolver;
 
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Session;
@@ -75,6 +77,12 @@ public class OracleAQConfiguration {
     public JmsMessagingTemplate jmsMessagingTemplate() throws JMSException {
         JmsMessagingTemplate jmsMessagingTemplate = new JmsMessagingTemplate();
         jmsMessagingTemplate.setConnectionFactory(aQjmsConnectionFactory());
+
+        DatumMapper datumMapper = new UserDatumMapper();
+        MessageConverter messageConverter = new MappingAdtMessageConverter(datumMapper);
+//        StructDatumMapper
+        jmsMessagingTemplate.setJmsMessageConverter(messageConverter);
+
         jmsMessagingTemplate.setDefaultDestinationName(QUEUE_NAME);
         return jmsMessagingTemplate;
     }
