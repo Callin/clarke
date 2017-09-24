@@ -9,6 +9,7 @@ public class ClarkeApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(ClarkeApplication.class, args);
+		context.getBean(OracleAQService.class).sendMessageJMT(); // <-- here
 		context.getBean(OracleAQService.class).sendMessage(); // <-- here
 	}
 }

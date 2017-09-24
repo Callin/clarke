@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.connection.ConnectionFactoryUtils;
-import org.springframework.jms.connection.JmsResourceHolder;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.support.destination.BeanFactoryDestinationResolver;
-import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -71,6 +69,14 @@ public class OracleAQConfiguration {
         log.info("Queue " + queue.getQueueName() + " created");
 
         return queue;
+    }
+
+    @Bean
+    public JmsMessagingTemplate jmsMessagingTemplate() throws JMSException {
+        JmsMessagingTemplate jmsMessagingTemplate = new JmsMessagingTemplate();
+        jmsMessagingTemplate.setConnectionFactory(aQjmsConnectionFactory());
+        jmsMessagingTemplate.setDefaultDestinationName(QUEUE_NAME);
+        return jmsMessagingTemplate;
     }
 
     @Bean
